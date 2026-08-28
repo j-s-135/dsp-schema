@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "phasing",
+  "description": "example phasing validation",
+  "type": "object",
+
+  "properties": {
+    "_refine": {
+      "oneOf": [
+        { "$ref": "schema_partial_refs.json#/properties/refine_ref" },
+        { "type": "array", "items": { "$ref": "schema_partial_refs.json#/properties/refine_ref" } }
+      ]
+    },
+    "_pdbx_initial_refinement_model": {
+      "oneOf": [
+        { "$ref": "schema_partial_refs.json#/properties/initial_refinement_model_ref" },
+        { "type": "array", "items": { "$ref": "schema_partial_refs.json#/properties/initial_refinement_model_ref" } }
+      ]
+    }
+  },
+
+  "required": ["_refine"],
+
+  "if": {
+    "properties": {
+      "_refine": {
+        "anyOf": [
+          { "$ref": "schema_partial_refs.json#/properties/refine_ref_conditional" },
+          {
+            "type": "array",
+            "contains": { "$ref": "schema_partial_refs.json#/properties/refine_ref_conditional" }
+          }
+        ]
+      }
+    }
+  },
+  "then": {
+    "required": ["_pdbx_initial_refinement_model"]
+  }
+}

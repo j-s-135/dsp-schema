@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schema.json",
+  "title": "phasing",
+  "description": "example phasing validation",
+  "type": "object",
+  "properties": {
+    "xray": {
+      "type": "object",
+      "properties": {
+        "modelfile": {
+          "type": "string"
+        },
+        "reflectionsfile": {
+          "$anchor": "reflectionsfile",
+          "type": "string"
+        }
+      },
+      "required": ["modelfile"]
+    },
+    "nmr": {
+      "type": "object",
+      "properties": {
+        "modelfile": {
+          "type": "string"
+        },
+        "chemicalshiftsfile": {
+          "$anchor": "chemicalshiftsfile",
+          "type": "string"
+        }
+      },
+      "required": ["modelfile"]
+    },
+    "em": {
+      "type": "object",
+      "properties": {
+        "modelfile": {
+          "type": "string"
+        },
+        "mapfile": {
+          "$anchor": "mapfile",
+          "type": "string"
+        }
+      },
+      "required": ["modelfile"]
+    },
+    "saxs": {
+      "type": "object",
+      "properties": {
+        "saxsfile": {
+          "type": "string"
+        }
+      },
+      "required": ["saxsfile"]
+    }
+  }
+}

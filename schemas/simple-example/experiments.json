@@ -1,0 +1,17 @@
+{
+    "xray": {
+        "modelfile": "model.txt",
+        "reflectionsfile": "reflections.txt"
+    },
+    "nmr": {
+        "modelfile": "model.txt",
+        "chemicalshiftsfile": "chemicalshifts.txt"
+    },
+    "em": {
+        "modelfile": "model.txt",
+        "mapfile": "map.txt"
+    },
+    "saxs": {
+        "saxsfile": "data.txt"
+    }
+}

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "crossrefs.json",
+  "$ref": "schema.json",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "xray": {"type": "object"}
+        }
+      },
+      "then": {
+        "properties": {
+          "xray": {
+            "required": ["reflectionsfile"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "nmr": {"type": "object"}
+        }
+      },
+      "then": {
+        "properties": {
+          "nmr": {
+            "required": ["chemicalshiftsfile"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "em": {"type": "object"}
+        }
+      },
+      "then": {
+        "properties": {
+          "em": {
+            "required": ["mapfile"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "saxs": {"type": "object"}
+        }
+      },
+      "then": {
+        "if": {
+          "properties": {
+            "em": {"type": "object"}
+          }
+        },
+        "then": {
+          "properties": {
+            "em": {"required": ["modelfile", "mapfile"]}
+          }
+        }
+      }
+    }
+  ]
+}

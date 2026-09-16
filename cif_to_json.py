@@ -72,7 +72,9 @@ def convert_multiline_string(line:str, gen:Generator) -> str:
     """
     multiline = line[1:]
     multiline += "\n"
-    while line := next(gen):
+    # a blank line is legal inside a multiline value, so do not stop on ""
+    while True:
+        line = next(gen)
         if line.startswith(";"):
             break
         multiline += line
@@ -114,7 +116,11 @@ def converter(infile:str, outfile:str, unit_cardinality:bool) -> list:
     pklfiles = []
 
     try:
-        while line := next(gen):
+        while True:
+            line = next(gen)
+            if line == "":
+                # blank line outside a multiline value: ignore
+                continue
             if line.startswith("data_"):
                 datablocks += 1
                 if datablocks > 1:
@@ -135,14 +141,18 @@ def converter(infile:str, outfile:str, unit_cardinality:bool) -> list:
                 while line.startswith("_"):
                     tokens = shlex.split(line)
                     # test for multiline record
-                    while len(tokens) != 2:
+                    while len(tokens) < 2:
                         line = next(gen)
+                        if line == "":
+                            continue
                         # test for multiline value
                         if line.startswith(";"):
                             multiline = convert_multiline_string(line, gen)
                             tokens.append(multiline)
                         else:
-                            tokens.append(line)
+                            tokens.extend(shlex.split(line))
+                    if len(tokens) > 2:
+                        raise ValueError("too many values for %s: %s" % (tokens[0], tokens[1:]))
                     # extract keys
                     category, attribute = tokens[0].split(".")
                     if category.startswith("_"):
@@ -181,12 +191,17 @@ def converter(infile:str, outfile:str, unit_cardinality:bool) -> list:
                     line = next(gen)
                 # read all data records
                 while not line.startswith("#"):
+                    if line == "":
+                        line = next(gen)
+                        continue
                     # read all values in one record
                     values = shlex.split(line)
                     # test for multiline record
-                    while len(values) != len(attributes):
+                    while len(values) < len(attributes):
                         # continue until have all values
                         line = next(gen)
+                        if line == "":
+                            continue
                         # test for multiline value
                         if line.startswith(";"):
                             # continue until multiline value completes
@@ -197,6 +212,9 @@ def converter(infile:str, outfile:str, unit_cardinality:bool) -> list:
                             tokens = shlex.split(line)
                             # add values
                             values.extend(tokens)
+                    if len(values) > len(attributes):
+                        raise ValueError("record for %s has %d values but %d attributes at line %s"
+                                         % (category, len(values), len(attributes), line))
                     # add record to template
                     record = OrderedDict()
                     for attribute, value in zip(attributes, values):

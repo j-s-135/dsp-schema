@@ -5,13 +5,13 @@
   "type": "object",
 
   "properties": {
-    "_refine": {
+    "refine": {
       "oneOf": [
         { "$ref": "schema_partial_refs.json#/properties/refine_ref" },
         { "type": "array", "items": { "$ref": "schema_partial_refs.json#/properties/refine_ref" } }
       ]
     },
-    "_pdbx_initial_refinement_model": {
+    "pdbx_initial_refinement_model": {
       "oneOf": [
         { "$ref": "schema_partial_refs.json#/properties/initial_refinement_model_ref" },
         { "type": "array", "items": { "$ref": "schema_partial_refs.json#/properties/initial_refinement_model_ref" } }
@@ -19,11 +19,11 @@
     }
   },
 
-  "required": ["_refine"],
+  "required": ["refine"],
 
   "if": {
     "properties": {
-      "_refine": {
+      "refine": {
         "anyOf": [
           { "$ref": "schema_partial_refs.json#/properties/refine_ref_conditional" },
           {
@@ -35,6 +35,6 @@
     }
   },
   "then": {
-    "required": ["_pdbx_initial_refinement_model"]
+    "required": ["pdbx_initial_refinement_model"]
   }
 }

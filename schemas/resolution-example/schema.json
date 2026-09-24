@@ -5,7 +5,7 @@
   "type": "object",
 
   "properties": {
-    "_refine": {
+    "refine": {
       "type": "array",
       "items": {
         "type": "object",
@@ -24,7 +24,7 @@
         "required": ["ls_d_res_low", "ls_d_res_high"]
       }
     },
-    "_reflns": {
+    "reflns": {
       "type": "array",
       "items": {
         "type": "object",
@@ -45,5 +45,5 @@
     }
   },
   "wwpdb_resolution_comparator": true,
-  "required": ["_refine", "_reflns"]
+  "required": ["refine", "reflns"]
 }

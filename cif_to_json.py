@@ -95,11 +95,20 @@ def format_outfile_path(outfile:str, datablocks:int) -> str:
     outfilepath = os.path.join(os.path.dirname(outfile), outfilename)
     return outfilepath
 
-def converter(infile:str, outfile:str, unit_cardinality:bool) -> list:
+def skip_category(category_name:str) -> bool:
+    if category_name.startswith("_"):
+        category_name = category_name[1:]
+    skips = ["atom_site"]
+    if category_name in skips:
+        return True
+    return False
+
+def converter(infile:str, outfile:str, unit_cardinality:bool, skip_coords:bool=False) -> list:
     """convert cif to python dictionary
     args:
         infile (str): cif file path
         outfile (str): output temporary pickle file path
+        skip_coords (bool): do not convert coordinates to json
     returns:
         list: list of temporary pickle file paths
     raises:
@@ -177,6 +186,15 @@ def converter(infile:str, outfile:str, unit_cardinality:bool) -> list:
                     template[category].append(attributes)
             elif line.startswith("loop_"):
                 line = next(gen)
+                if not line.startswith("_"):
+                    raise ValueError("unexpected character after loop record")
+                category, attribute = line.split(".")
+                if skip_coords and skip_category(category):
+                    while line.startswith("_"):
+                        line = next(gen)
+                    while not line.startswith("#"):
+                        line = next(gen)
+                    continue
                 attributes = []
                 # read all attributes
                 while line.startswith("_"):
@@ -258,12 +276,16 @@ if __name__ == "__main__":
     parser.add_argument("--outfile", required=True, help="json file")
     parser.add_argument("--dict", action="store_true", help="skip conversion of python dictionary to json")
     parser.add_argument("--unit_cardinality", action="store_true", help="retain unit cardinality")
+    parser.add_argument("--skip_coords", action="store_true", help="skip conversion of coordinates to json")
 
     # parse args
     args = parser.parse_args()
     unit_cardinality = False
+    skip_coords = False
     if args.unit_cardinality:
         unit_cardinality = True
+    if args.skip_coords:
+        skip_coords = True
 
     # validate file paths
     infile = args.infile
@@ -278,7 +300,7 @@ if __name__ == "__main__":
 
     # convert cif file to python dictionary
     # write result to pickle file
-    if (pklfiles := converter(infile, outfile, unit_cardinality)) == []:
+    if (pklfiles := converter(infile, outfile, unit_cardinality, skip_coords)) == []:
         sys.exit("error - conversion failed")
 
     # read dictionary from pickle file

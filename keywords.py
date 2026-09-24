@@ -31,8 +31,8 @@ class Keywords:
         if not isinstance(instance, dict):
             return
 
-        refine = instance.get("_refine")
-        reflns = instance.get("_reflns")
+        refine = instance.get("refine")
+        reflns = instance.get("reflns")
 
         if refine is None or reflns is None:
             return
@@ -42,7 +42,7 @@ class Keywords:
 
         if len(refine) != len(reflns):
             raise ValidationError(
-                f"error, _refine and _reflns do not have the same length: {len(refine)} {len(reflns)}"
+                f"error, refine and reflns do not have the same length: {len(refine)} {len(reflns)}"
             )
 
         for index in range(len(refine)):

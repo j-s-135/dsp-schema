@@ -41,6 +41,9 @@
     "initial_refinement_model_ref": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "integer"
+        },
         "type": {
           "enum": [
             "experimental model",
@@ -66,10 +69,10 @@
           "type": "string"
         },
         "entity_id_list": {
-          "type": "string"
+          "type": ["string", "null"]
         },
         "details": {
-          "type": "string"
+          "type": ["string", "null"]
         }
       }
     }
